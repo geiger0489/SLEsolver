@@ -4,9 +4,9 @@
 
 For example:
   <ul>
-  <li>2x	+	y	−	2z	=	3</li>
-  <li>x	−	y	−	z	=	0</li>
-  <li>x	+	y	+	3z	=	12</li>
+  <li>2x<sub>1</sub>	+	x<sub>2</sub>	−	2x<sub>3</sub>	=	3</li>
+  <li>x<sub>1</sub>	−	x<sub>2</sub>	−	x<sub>3</sub>	=	0</li>
+  <li>x<sub>1</sub>	+	x<sub>2</sub>	+	3x<sub>3</sub>	=	12</li>
   </ul>
 
 It works as follows:
