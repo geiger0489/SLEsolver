@@ -22,5 +22,7 @@ The app consists of three parts (modules):
      It is arranged to make it possible to use it as pluggable lib for other apps.
      You also can plug it to your own app.
 
-I write it for fun and for the purpose of learning math.
+To run the app you need to have installed <a href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> and <a href="https://www.python.org/">python3</a> on your machine.
+
+I write it just for fun and for the purpose of learning math.
 Ejoy.
