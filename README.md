@@ -1,6 +1,6 @@
 # SLEsolver
 
-<b>SLEsolver</b> is a little PyQt4 app I implement for solving Systems of Linear Equations (aka SLE).
+<b>SLEsolver</b> is a little <a href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> app I implement for solving <a href="https://en.wikipedia.org/wiki/System_of_linear_equations">Systems of Linear Equations</a> (aka SLE).
 
 For example:
   <ul>
