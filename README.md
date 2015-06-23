@@ -3,9 +3,11 @@
 <b>SLEsolver</b> is a little PyQt4 app I implement for solving Systems of Linear Equations (aka SLE).
 
 For example:
-  2x	+	y	−	2z	=	3
-  x	−	y	−	z	=	0
-  x	+	y	+	3z	=	12
+  <ul>
+  <li>2x	+	y	−	2z	=	3</li>
+  <li>x	−	y	−	z	=	0</li>
+  <li>x	+	y	+	3z	=	12</li>
+  </ul>
 
 It works as follows:
   1. Type a system inside the Text Area.
