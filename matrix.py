@@ -114,9 +114,7 @@ class Matrix():
         Transposes a given matrix. a[i][j] --> a[j][i] 
         '''
         
-        r, c = self.dimensions()
-        
-        if r == c: # if the matrix is square
+        def transpose_square(r, c):
             for i in range(r):
                 for j in range(i, c):
                     if i == j:
@@ -124,6 +122,26 @@ class Matrix():
                     b = self.m[i][j]
                     self.m[i][j] = self.m[j][i]
                     self.m[j][i] = b
+        
+        r, c = self.dimensions()
+        if r == c: # if the matrix is square
+            transpose_square(r, c)
+            
+        elif r < c: # if the matrix is horizontal
+            transpose_square(r, r)
+            for i in range(c - r):
+                row = []
+                for j in range(r):
+                    row.append(self.m[j][r])
+                    del self.m[j][r]
+                self.m.append(row)
+                
+        else: # if the matrix is vertical
+            transpose_square(c, c)
+            for i in range(r - c):
+                for j in range(c):
+                    self.m[j].append(self.m[c][j])
+                del self.m[c]
                       
 if __name__=='__main__':
     import unittest
@@ -183,8 +201,16 @@ if __name__=='__main__':
             self.assertFalse(m2.is_square())
         
         def test_transpose_matrix(self):
-            m = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+            m = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]]) #square
             m.transpose()
             self.assertEqual(m.m, [[1, 1, 1], [2, 2, 2], [3, 3, 3]])
+            
+            m = Matrix([[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]) # cols > rows
+            m.transpose()
+            self.assertEqual(m.m, [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]])
+            
+            m = Matrix([[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]]) # cols < rows
+            m.transpose()
+            self.assertEqual(m.m, [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]])
             
     unittest.main()
