@@ -5,17 +5,27 @@ class Matrix():
         self.set(m)
 
     def __str__(self):
-        if self.m:
-            s = ''
-            for i in self.m:
-                s += '| '
-                for j in i:
-                    s += str(j) + ' '
-                s += '|\n'  
-            return s
-        else:
+        if not self.m:
             return 'Empty matrix'
             
+        r, c = self.dimensions()
+        if r == c == 1:
+            return str(self.m[0][0])
+        if r > 50 or c > 50:
+            return 'Matrix of %s x %s elements' % (r, c)
+        
+        max = 1
+        for i in self.m:
+            for j in i:
+                l = len( str(j) )
+                max = l if l > max else max
+        max = str(max + 1)
+        s = ''
+        row = '|' + ('%' + max + 's') * len(self.m[0]) + ' |\n'
+        for i in self.m:
+            s += row % tuple(i)  
+        return s
+ 
     def __add__(self, other):
         '''
         Sums two equal matrices. A + B = C.
@@ -59,20 +69,21 @@ class Matrix():
             raise ValueError('Rows and cols must be positive integers.')
         
         self.m = [[n for i in range(c)] for j in range(r)]
+        return self
 
     def null(self, r, c):
         '''
         Generates a null-matrix of size R x C.
         '''
         
-        self.fill(r, c, 0)
+        return self.fill(r, c, 0)
         
     def ones(self, r, c):
         '''
         Generates a all-ones matrix of size R x C.
         '''
         
-        self.fill(r, c, 1)
+        return self.fill(r, c, 1)
         
     def unity(self, n):
         '''
@@ -82,6 +93,7 @@ class Matrix():
         self.null(n, n)
         for i in range(n):
             self.m[i][i] = 1
+        return self
             
     def invert(self):
         '''
