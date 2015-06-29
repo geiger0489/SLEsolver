@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
+
 class Matrix():
     def __init__(self, m = []):
         self.set(m)
+        
+    def __eq__(self, other):
+        if type(other) == Matrix:
+            return self.m == other.m
+        elif type(other) == list:
+            return self.m == other
+        else:
+            raise TypeError('Unsupported operand "==" for Matrix and %s' % other.__class__.__name__)
 
     def __str__(self):
         if not self.m:
@@ -33,18 +43,20 @@ class Matrix():
         
         if not other.dimensions() == self.dimensions():
             raise Exception('Matrix dimensions must be equal.')
-            
-        for i in range( len(self.m) ):
-            for j in range( len(self.m[i]) ):
-                self.m[i][j] += other.m[i][j]
         
-        return self
+        result = Matrix( deepcopy(self.m) )
+        for i in range( len(result.m) ):
+            for j in range( len(result.m[i]) ):
+                result.m[i][j] += other.m[i][j]
+        
+        return result
         
     def __sub__(self, other):
         '''
         Subtracts two equal matrices. A - B = C.
         '''
         
+        other = Matrix( deepcopy(other.m) )
         other.invert()
         return self.__add__(other)
     
@@ -103,7 +115,35 @@ class Matrix():
         for i in range( len(self.m) ):
             for j in range( len(self.m[i]) ):
                 self.m[i][j] *= -1
-                
+        return self
+        
+    def flip_rows(self, m, n):
+        '''
+        Flips m-th and n-th rows.
+        '''
+        
+        if not type(m) == type(n) == int:
+            raise TypeError('Row indices must be integer.')
+        
+        buff = self.m[m]
+        self.m[m] = self.m[n]
+        self.m[n] = buff
+        return self
+
+    def flip_cols(self, m, n):
+        '''
+        Flips m-th and n-th cols.
+        '''
+        
+        if not type(m) == type(n) == int:
+            raise TypeError('Column indices must be integer.')
+        
+        for i in self.m:
+            buff = i[m]
+            i[m] = i[n]
+            i[n] = buff
+        return self
+        
     def dimensions(self):
         '''
         Returns matrix dimensions as a tuple (rows, cols).
@@ -123,8 +163,8 @@ class Matrix():
         
     def append_right(self, m):
         '''
-        Appends a given matrix to the left of the existing one.
-        Matrices must be equal height.
+        Appends a given matrix to the right of the existing one.
+        Matrices must have equal heights.
         '''
         
         if not type(m) == Matrix:
@@ -135,9 +175,28 @@ class Matrix():
         
         if not rm == r:
             raise ValueError('Matrices have different height.')
-            
+        
         for i in range(r):
-            self.m[i] += m.m[i]
+            self.m[i].extend(m.m[i])
+        return self
+
+    def append_left(self, m):
+        '''
+        Appends a given matrix to the left of the existing one.
+        Matrices must have equal heights.
+        '''
+        
+        if not type(m) == Matrix:
+            raise TypeError('Trying to append non-matrix to Matrix object')
+            
+        rm, cm = m.dimensions()
+        r, c = self.dimensions()
+        
+        if not rm == r:
+            raise ValueError('Matrices have different height.')
+        
+        for i in range(r):
+            self.m[i] = m.m[i] + self.m[i]
         return self
         
     def transpose(self):
@@ -173,6 +232,21 @@ class Matrix():
                 for j in range(c):
                     self.m[j].append(self.m[c][j])
                 del self.m[c]
+    
+    def to_upper_triangular(self):
+        '''
+        Transforms the matrix to upper triangular matrix.
+        1 2 3           1 2 3
+        4 5 6  goes to  0 5 6
+        7 8 9           0 0 9
+        '''
+        '''
+        r, c = self.dimensions()
+        for j in range(c):
+            for i in range(j + 1, r):
+                self.m[i][j] - self.m[i - 1][j] * self.m[i][j] / self.m[i - 1][j]
+        '''
+                
                       
 if __name__=='__main__':
     import unittest
@@ -186,28 +260,36 @@ if __name__=='__main__':
         def test_fill_matrix_with_n(self):
             m = Matrix()
             m.fill(2, 3, 5)
-            self.assertEqual(m.m, [[5, 5, 5],[5, 5, 5]])
+            self.assertEqual(m, [[5, 5, 5],[5, 5, 5]])
             
         def test_create_null_matrix(self):
             m = Matrix()
             m.null(2, 3)
-            self.assertEqual(m.m, [[0, 0, 0],[0, 0, 0]])
+            self.assertEqual(m, [[0, 0, 0],[0, 0, 0]])
             
         def test_create_ones_matrix(self):
             m = Matrix()
             m.ones(2, 3)
-            self.assertEqual(m.m, [[1, 1, 1],[1, 1, 1]])
+            self.assertEqual(m, [[1, 1, 1],[1, 1, 1]])
             
         def test_create_unity_matrix(self):
             m = Matrix()
             m.unity(3)
-            self.assertEqual(m.m, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+            self.assertEqual(m, [[1, 0, 0], [0, 1, 0], [0, 0, 1]])
             
         def test_invert_matrix(self):
             m = Matrix()
             m.unity(3)
             m.invert()
-            self.assertEqual(m.m, [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])
+            self.assertEqual(m, [[-1, 0, 0], [0, -1, 0], [0, 0, -1]])
+
+        def test_flip_cols(self):
+            m = Matrix([[1,2],[3,4]])
+            self.assertEqual(m.flip_cols(0, 1), [[2,1], [4,3]])
+            
+        def test_flip_rows(self):
+            m = Matrix([[1,2],[3,4]])
+            self.assertEqual(m.flip_rows(0, 1), [[3,4], [1,2]])
             
         def test_get_matrix_dimensions(self):
             m = Matrix([[-1, 0, 0], [0, 0, -1]])
@@ -217,13 +299,13 @@ if __name__=='__main__':
             m1 = Matrix([[1, 1], [1, 1]])
             m2 = Matrix([[1, 1], [1, 1]])
             m3 = m1 + m2
-            self.assertEqual(m3.m, [[2, 2], [2, 2]])
+            self.assertEqual(m3, [[2, 2], [2, 2]])
         
         def test_subtract_two_matrices(self):
             m1 = Matrix([[1, 1], [1, 1]])
             m2 = Matrix([[1, 1], [1, 1]])
             m3 = m1 - m2
-            self.assertEqual(m3.m, [[0, 0], [0, 0]])
+            self.assertEqual(m3, [[0, 0], [0, 0]])
             
         def test_matrix_is_square(self):
             m1 = Matrix([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
@@ -234,19 +316,24 @@ if __name__=='__main__':
         def test_transpose_matrix(self):
             m = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]]) #square
             m.transpose()
-            self.assertEqual(m.m, [[1, 1, 1], [2, 2, 2], [3, 3, 3]])
+            self.assertEqual(m, [[1, 1, 1], [2, 2, 2], [3, 3, 3]])
             
             m = Matrix([[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]]) # cols > rows
             m.transpose()
-            self.assertEqual(m.m, [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]])
+            self.assertEqual(m, [[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]])
             
             m = Matrix([[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]]) # cols < rows
             m.transpose()
-            self.assertEqual(m.m, [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]])
+            self.assertEqual(m, [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]])
 
         def test_append_right(self):
             m1 = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
             m2 = Matrix([[4], [4], [4]])
             self.assertTrue(m1.append_right(m2) == [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]])
-            
+
+        def test_append_left(self):
+            m1 = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+            m2 = Matrix([[4], [4], [4]])
+            self.assertTrue(m1.append_left(m2) == [[4, 1, 2, 3], [4, 1, 2, 3], [4, 1, 2, 3]])
+           
     unittest.main()
