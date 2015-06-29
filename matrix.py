@@ -121,6 +121,25 @@ class Matrix():
         
         return len(self.m) == len(self.m[0])
         
+    def append_right(self, m):
+        '''
+        Appends a given matrix to the left of the existing one.
+        Matrices must be equal height.
+        '''
+        
+        if not type(m) == Matrix:
+            raise TypeError('Trying to append non-matrix to Matrix object')
+            
+        rm, cm = m.dimensions()
+        r, c = self.dimensions()
+        
+        if not rm == r:
+            raise ValueError('Matrices have different height.')
+            
+        for i in range(r):
+            self.m[i] += m.m[i]
+        return self
+        
     def transpose(self):
         '''
         Transposes a given matrix. a[i][j] --> a[j][i] 
@@ -224,5 +243,10 @@ if __name__=='__main__':
             m = Matrix([[1, 1, 1], [2, 2, 2], [3, 3, 3], [4, 4, 4], [5, 5, 5]]) # cols < rows
             m.transpose()
             self.assertEqual(m.m, [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5]])
+
+        def test_append_right(self):
+            m1 = Matrix([[1, 2, 3], [1, 2, 3], [1, 2, 3]])
+            m2 = Matrix([[4], [4], [4]])
+            self.assertTrue(m1.append_right(m2) == [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]])
             
     unittest.main()
