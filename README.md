@@ -18,9 +18,7 @@ The app consists of three parts (modules):
   1. <b>Main file</b> (SLEsolver.pyw). It contains PyQt classes and gui-related algorhytms.
   2. <b>Parser</b> (parser.py). It's a class that provides parsing of input data and transferring it to evaluator, 
      It also represents opposite - gets data from evaluator and transfers it to the Text Area.
-  4. <b>Matrix</b> (matrix.py). Class providing basic operations with matrices and vectors.
-  3. <b>Evaluator</b> (core.py). Base class which produces all calculations. Only pure math.
-     The class is arranged as a pluggable lib for other apps. You also can plug it to your own app.
+  3. <b>Matrix</b> (matrix.py). Class providing basic operations with matrices and vectors.
 
 To run the app make sure that you have installed <a href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> and <a href="https://www.python.org/">python3</a> on your machine.
 
