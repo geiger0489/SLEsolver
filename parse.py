@@ -50,10 +50,11 @@ class Parser():
         r = 0
         for i in m:
             for j in i:
-                _sign = -1 if j[0] == '-' else 1 
+                _sign = -1 if j[0] == '-' else 1
+                a = 1 if j[1] == None else j[1]
                 # next row do work if there are several terms of the same var xn
                 # they will be summed up
-                matr[r][ int(j[2])-1 ] += _sign * _type( j[1] )
+                matr[r][ int(j[2])-1 ] += _sign * _type(a)
             r += 1
 
         return matr
